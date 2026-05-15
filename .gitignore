@@ -141,3 +141,10 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# Environment variables
+backend/.env
+
+# Upload folder
+backend/uploads/*
+!backend/uploads/.gitkeep

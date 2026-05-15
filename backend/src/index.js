@@ -12,6 +12,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static('uploads'));
 
+// Routes
+const categoriesRouter = require('./routes/categories');
+const analysisRouter = require('./routes/analysis');
+
+app.use('/api/categories', categoriesRouter);
+app.use('/api/analysis-points', analysisRouter);
+
 // Test route
 app.get('/', (req, res) => {
   res.json({

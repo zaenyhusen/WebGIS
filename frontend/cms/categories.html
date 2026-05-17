@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GeoEngine CMS — Kategori</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #131313; --surface: #1c1b1b;
+      --surface-high: #2a2a2a; --border: #3b494c;
+      --primary: #00E5FF; --text: #e5e2e1;
+      --text-muted: #849396; --danger: #FF3B3B;
+      --success: #00FF88; --sidebar-width: 240px;
+    }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+    header { height: 52px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 20px; gap: 16px; flex-shrink: 0; }
+    .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; text-decoration: none; color: var(--text); }
+    .logo-icon { width: 28px; height: 28px; background: var(--primary); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #000; font-size: 14px; }
+    nav { display: flex; gap: 4px; margin-left: 8px; }
+    nav a { padding: 6px 14px; border-radius: 4px; font-size: 13px; color: var(--text-muted); text-decoration: none; transition: all 0.15s; }
+    nav a:hover { color: var(--text); background: var(--surface-high); }
+    nav a.active { color: var(--primary); border-bottom: 2px solid var(--primary); border-radius: 0; }
+    .header-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+    .btn-logout { padding: 6px 12px; background: none; border: 1px solid var(--border); border-radius: 4px; color: var(--text-muted); font-size: 12px; cursor: pointer; }
+    .btn-logout:hover { border-color: var(--danger); color: var(--danger); }
+    .main { display: flex; flex: 1; overflow: hidden; }
+    .sidebar { width: var(--sidebar-width); background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; padding: 16px 8px; }
+    .sidebar-label { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); padding: 0 8px; margin-bottom: 6px; margin-top: 16px; }
+    .sidebar-label:first-child { margin-top: 0; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 4px; font-size: 13px; color: var(--text-muted); text-decoration: none; transition: all 0.15s; border: none; background: none; width: 100%; cursor: pointer; }
+    .nav-item:hover { background: var(--surface-high); color: var(--text); }
+    .nav-item.active { background: rgba(0,229,255,0.1); color: var(--primary); }
+    .nav-item i { font-size: 17px; }
+    .content { flex: 1; overflow-y: auto; padding: 24px; }
+    .content-grid { display: grid; grid-template-columns: 380px 1fr; gap: 24px; }
+    .page-title { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+    .page-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
+    .form-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 24px; height: fit-content; }
+    .form-title { font-size: 15px; font-weight: 600; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+    .form-group { margin-bottom: 16px; }
+    .form-label { display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
+    .form-input { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 9px 12px; color: var(--text); font-size: 13px; font-family: 'Inter', sans-serif; outline: none; transition: border-color 0.15s; }
+    .form-input:focus { border-color: var(--primary); }
+    .color-row { display: flex; align-items: center; gap: 10px; }
+    .color-preview { width: 36px; height: 36px; border-radius: 4px; border: 1px solid var(--border); flex-shrink: 0; transition: background 0.2s; }
+    .color-presets { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+    .color-preset { width: 24px; height: 24px; border-radius: 3px; cursor: pointer; border: 2px solid transparent; transition: border-color 0.15s; }
+    .color-preset:hover { border-color: var(--text); }
+    .color-preset.selected { border-color: var(--text); }
+    .form-actions { display: flex; gap: 8px; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
+    .btn-primary { padding: 10px 20px; background: var(--primary); color: #000; border: none; border-radius: 4px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+    .btn-primary:hover { opacity: 0.85; }
+    .btn-secondary { padding: 10px 20px; background: none; border: 1px solid var(--border); border-radius: 4px; color: var(--text-muted); font-size: 13px; cursor: pointer; }
+    .btn-secondary:hover { background: var(--surface-high); }
+    .success-msg { background: rgba(0,255,136,0.1); border: 1px solid var(--success); border-radius: 4px; padding: 10px 14px; font-size: 13px; color: var(--success); margin-bottom: 16px; display: none; }
+    .error-msg { background: rgba(255,59,59,0.1); border: 1px solid var(--danger); border-radius: 4px; padding: 10px 14px; font-size: 13px; color: var(--danger); margin-bottom: 16px; display: none; }
+    .cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .cat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; transition: border-color 0.15s; }
+    .cat-card:hover { border-color: var(--text-muted); }
+    .cat-card-top { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .cat-icon { width: 36px; height: 36px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+    .cat-name { font-size: 14px; font-weight: 600; }
+    .cat-slug { font-size: 11px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; margin-top: 2px; }
+    .cat-actions { display: flex; gap: 6px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+    .btn-xs { padding: 4px 10px; border-radius: 3px; font-size: 11px; cursor: pointer; border: 1px solid var(--border); background: none; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+    .btn-xs:hover { background: var(--surface-high); color: var(--text); }
+    .btn-xs.danger:hover { border-color: var(--danger); color: var(--danger); }
+    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .section-title { font-size: 15px; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="/cms/dashboard.html">
+    <div class="logo-icon"><i class="ti ti-hexagon"></i></div>
+    GeoEngine CMS
+  </a>
+  <nav>
+    <a href="/cms/dashboard.html">Dashboard</a>
+    <a href="/webgis">Map View</a>
+    <a href="/cms/analysis.html">Asset Registry</a>
+    <a href="/cms/categories.html" class="active">Kategori</a>
+  </nav>
+  <div class="header-right">
+    <span style="font-size:13px;color:var(--text-muted)">
+      <i class="ti ti-user-circle"></i>
+      <span id="username-display">Admin</span>
+    </span>
+    <button class="btn-logout" onclick="logout()">
+      <i class="ti ti-logout"></i> Logout
+    </button>
+  </div>
+</header>
+
+<div class="main">
+  <aside class="sidebar">
+    <div class="sidebar-label">Overview</div>
+    <a class="nav-item" href="/cms/dashboard.html"><i class="ti ti-dashboard"></i> Dashboard</a>
+    <a class="nav-item" href="/cms/analysis.html"><i class="ti ti-map-pin"></i> Titik Analisis</a>
+    <a class="nav-item active" href="/cms/categories.html"><i class="ti ti-tags"></i> Kategori</a>
+    <div class="sidebar-label">System</div>
+    <a class="nav-item" href="/webgis"><i class="ti ti-map"></i> Buka WebGIS</a>
+    <a class="nav-item" onclick="logout()"><i class="ti ti-logout"></i> Logout</a>
+  </aside>
+
+  <div class="content">
+    <div class="page-title">Manajemen Kategori</div>
+    <div class="page-sub">Tambah, edit, atau hapus kategori tema analisis</div>
+
+    <div class="success-msg" id="success-msg"></div>
+    <div class="error-msg" id="error-msg"></div>
+
+    <div class="content-grid">
+      <!-- FORM -->
+      <div class="form-card">
+        <div class="form-title">
+          <i class="ti ti-tag"></i>
+          <span id="form-title-label">Tambah Kategori Baru</span>
+        </div>
+        <input type="hidden" id="edit-id"/>
+
+        <div class="form-group">
+          <label class="form-label">Nama Kategori</label>
+          <input class="form-input" type="text" id="f-name" placeholder="Contoh: Urban Growth"/>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Slug (URL-friendly)</label>
+          <input class="form-input" type="text" id="f-slug" placeholder="urban-growth" style="font-family:'JetBrains Mono',monospace"/>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Warna</label>
+          <div class="color-row">
+            <div class="color-preview" id="color-preview" style="background:#00E5FF"></div>
+            <input class="form-input" type="text" id="f-color" value="#00E5FF" maxlength="7" oninput="updateColorPreview()"/>
+          </div>
+          <div class="color-presets">
+            <div class="color-preset selected" style="background:#00E5FF" onclick="setColor('#00E5FF', this)"></div>
+            <div class="color-preset" style="background:#00FF88" onclick="setColor('#00FF88', this)"></div>
+            <div class="color-preset" style="background:#FF6B35" onclick="setColor('#FF6B35', this)"></div>
+            <div class="color-preset" style="background:#A855F7" onclick="setColor('#A855F7', this)"></div>
+            <div class="color-preset" style="background:#FF3B3B" onclick="setColor('#FF3B3B', this)"></div>
+            <div class="color-preset" style="background:#FACC15" onclick="setColor('#FACC15', this)"></div>
+            <div class="color-preset" style="background:#60A5FA" onclick="setColor('#60A5FA', this)"></div>
+            <div class="color-preset" style="background:#F472B6" onclick="setColor('#F472B6', this)"></div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-primary" onclick="submitForm()">
+            <i class="ti ti-device-floppy"></i>
+            <span id="submit-label">Simpan Kategori</span>
+          </button>
+          <button class="btn-secondary" onclick="resetForm()">
+            <i class="ti ti-x"></i> Reset
+          </button>
+        </div>
+      </div>
+
+      <!-- GRID KATEGORI -->
+      <div>
+        <div class="section-header">
+          <div class="section-title">Semua Kategori</div>
+          <span id="cat-count" style="font-size:12px;color:var(--text-muted)"></span>
+        </div>
+        <div class="cat-grid" id="cat-grid">
+          <div style="padding:20px;color:var(--text-muted);font-size:13px">Memuat...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const API = 'http://localhost:3000/api';
+  const token = localStorage.getItem('geo_token');
+  const user = JSON.parse(localStorage.getItem('geo_user') || '{}');
+  if (!token) window.location.href = '/cms/index.html';
+  document.getElementById('username-display').textContent = user.username || 'Admin';
+
+  // Auto-generate slug dari nama
+  document.getElementById('f-name').addEventListener('input', function() {
+    const slug = this.value.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+    document.getElementById('f-slug').value = slug;
+  });
+
+  function setColor(hex, el) {
+    document.getElementById('f-color').value = hex;
+    document.getElementById('color-preview').style.background = hex;
+    document.querySelectorAll('.color-preset').forEach(e => e.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function updateColorPreview() {
+    const val = document.getElementById('f-color').value;
+    if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+      document.getElementById('color-preview').style.background = val;
+    }
+  }
+
+  async function loadCategories() {
+    const res = await fetch(`${API}/categories`);
+    const data = await res.json();
+    const cats = data.data || [];
+    document.getElementById('cat-count').textContent = `${cats.length} kategori`;
+    const grid = document.getElementById('cat-grid');
+
+    if (!cats.length) {
+      grid.innerHTML = '<div style="color:var(--text-muted);font-size:13px">Belum ada kategori</div>';
+      return;
+    }
+
+    grid.innerHTML = cats.map(c => `
+      <div class="cat-card">
+        <div class="cat-card-top">
+          <div class="cat-icon" style="background:${c.color}20;color:${c.color}">
+            <i class="ti ti-tag"></i>
+          </div>
+          <div>
+            <div class="cat-name">${c.name}</div>
+            <div class="cat-slug">${c.slug}</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-muted)">
+          <div style="width:12px;height:12px;border-radius:50%;background:${c.color}"></div>
+          <span style="font-family:'JetBrains Mono',monospace">${c.color}</span>
+        </div>
+        <div class="cat-actions">
+          <button class="btn-xs" onclick="loadEdit(${JSON.stringify(c).replace(/"/g, '&quot;')})">
+            <i class="ti ti-edit"></i> Edit
+          </button>
+          <button class="btn-xs danger" onclick="deleteCategory('${c.id}','${c.name}')">
+            <i class="ti ti-trash"></i> Hapus
+          </button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function loadEdit(c) {
+    document.getElementById('edit-id').value = c.id;
+    document.getElementById('f-name').value = c.name;
+    document.getElementById('f-slug').value = c.slug;
+    document.getElementById('f-color').value = c.color;
+    document.getElementById('color-preview').style.background = c.color;
+    document.getElementById('form-title-label').textContent = 'Edit Kategori';
+    document.getElementById('submit-label').textContent = 'Update Kategori';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  async function submitForm() {
+    const name = document.getElementById('f-name').value.trim();
+    const slug = document.getElementById('f-slug').value.trim();
+    const color = document.getElementById('f-color').value.trim();
+    const editId = document.getElementById('edit-id').value;
+
+    if (!name || !slug) {
+      showMsg('error', 'Nama dan slug wajib diisi');
+      return;
+    }
+
+    const url = editId ? `${API}/categories/${editId}` : `${API}/categories`;
+    const method = editId ? 'PUT' : 'POST';
+
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ name, slug, color })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        showMsg('success', editId ? 'Kategori berhasil diupdate!' : 'Kategori berhasil ditambahkan!');
+        resetForm();
+        loadCategories();
+      } else {
+        showMsg('error', data.message || 'Gagal menyimpan');
+      }
+    } catch (err) {
+      showMsg('error', 'Tidak dapat terhubung ke server');
+    }
+  }
+
+  async function deleteCategory(id, name) {
+    if (!confirm(`Hapus kategori "${name}"?`)) return;
+    await fetch(`${API}/categories/${id}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    showMsg('success', `Kategori "${name}" dihapus`);
+    loadCategories();
+  }
+
+  function resetForm() {
+    document.getElementById('edit-id').value = '';
+    document.getElementById('f-name').value = '';
+    document.getElementById('f-slug').value = '';
+    document.getElementById('f-color').value = '#00E5FF';
+    document.getElementById('color-preview').style.background = '#00E5FF';
+    document.getElementById('form-title-label').textContent = 'Tambah Kategori Baru';
+    document.getElementById('submit-label').textContent = 'Simpan Kategori';
+  }
+
+  function showMsg(type, msg) {
+    const el = document.getElementById(`${type}-msg`);
+    el.textContent = msg;
+    el.style.display = 'block';
+    setTimeout(() => el.style.display = 'none', 4000);
+  }
+
+  function logout() {
+    localStorage.removeItem('geo_token');
+    localStorage.removeItem('geo_user');
+    window.location.href = '/cms/index.html';
+  }
+
+  loadCategories();
+</script>
+</body>
+</html>

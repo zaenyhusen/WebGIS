@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GeoEngine CMS — Titik Analisis</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #131313; --surface: #1c1b1b;
+      --surface-high: #2a2a2a; --border: #3b494c;
+      --primary: #00E5FF; --text: #e5e2e1;
+      --text-muted: #849396; --danger: #FF3B3B;
+      --success: #00FF88; --sidebar-width: 240px;
+    }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+    header { height: 52px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 20px; gap: 16px; flex-shrink: 0; }
+    .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; text-decoration: none; color: var(--text); }
+    .logo-icon { width: 28px; height: 28px; background: var(--primary); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #000; font-size: 14px; }
+    nav { display: flex; gap: 4px; margin-left: 8px; }
+    nav a { padding: 6px 14px; border-radius: 4px; font-size: 13px; color: var(--text-muted); text-decoration: none; transition: all 0.15s; }
+    nav a:hover { color: var(--text); background: var(--surface-high); }
+    nav a.active { color: var(--primary); border-bottom: 2px solid var(--primary); border-radius: 0; }
+    .header-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+    .btn-logout { padding: 6px 12px; background: none; border: 1px solid var(--border); border-radius: 4px; color: var(--text-muted); font-size: 12px; cursor: pointer; }
+    .btn-logout:hover { border-color: var(--danger); color: var(--danger); }
+
+    .main { display: flex; flex: 1; overflow: hidden; }
+
+    .sidebar { width: var(--sidebar-width); background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; padding: 16px 8px; }
+    .sidebar-label { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); padding: 0 8px; margin-bottom: 6px; margin-top: 16px; }
+    .sidebar-label:first-child { margin-top: 0; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 4px; font-size: 13px; color: var(--text-muted); text-decoration: none; transition: all 0.15s; border: none; background: none; width: 100%; cursor: pointer; }
+    .nav-item:hover { background: var(--surface-high); color: var(--text); }
+    .nav-item.active { background: rgba(0,229,255,0.1); color: var(--primary); }
+    .nav-item i { font-size: 17px; }
+
+    .content { flex: 1; overflow-y: auto; padding: 24px; }
+    .content-grid { display: grid; grid-template-columns: 1fr 380px; gap: 24px; }
+
+    .page-title { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+    .page-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
+
+    /* FORM */
+    .form-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 24px; }
+    .form-title { font-size: 15px; font-weight: 600; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+    .form-group { margin-bottom: 16px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-label { display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
+    .form-input { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 9px 12px; color: var(--text); font-size: 13px; font-family: 'Inter', sans-serif; outline: none; transition: border-color 0.15s; }
+    .form-input:focus { border-color: var(--primary); }
+    .form-input.mono { font-family: 'JetBrains Mono', monospace; }
+    textarea.form-input { resize: vertical; min-height: 100px; }
+    select.form-input { cursor: pointer; }
+
+    .tools-input-wrap { display: flex; gap: 8px; }
+    .tools-input-wrap input { flex: 1; }
+    .btn-add-tool { padding: 9px 14px; background: var(--surface-high); border: 1px solid var(--border); border-radius: 4px; color: var(--text-muted); cursor: pointer; font-size: 13px; white-space: nowrap; }
+    .btn-add-tool:hover { color: var(--primary); border-color: var(--primary); }
+    .tools-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .tool-tag { display: flex; align-items: center; gap: 5px; font-size: 11px; padding: 4px 8px; background: var(--surface-high); border: 1px solid var(--border); border-radius: 2px; font-family: 'JetBrains Mono', monospace; color: var(--text-muted); }
+    .tool-tag button { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 12px; padding: 0; line-height: 1; }
+    .tool-tag button:hover { color: var(--danger); }
+
+    .form-actions { display: flex; gap: 8px; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
+    .btn-primary { padding: 10px 20px; background: var(--primary); color: #000; border: none; border-radius: 4px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+    .btn-primary:hover { opacity: 0.85; }
+    .btn-secondary { padding: 10px 20px; background: none; border: 1px solid var(--border); border-radius: 4px; color: var(--text-muted); font-size: 13px; cursor: pointer; }
+    .btn-secondary:hover { background: var(--surface-high); color: var(--text); }
+
+    .success-msg { background: rgba(0,255,136,0.1); border: 1px solid var(--success); border-radius: 4px; padding: 10px 14px; font-size: 13px; color: var(--success); margin-bottom: 16px; display: none; }
+    .error-msg { background: rgba(255,59,59,0.1); border: 1px solid var(--danger); border-radius: 4px; padding: 10px 14px; font-size: 13px; color: var(--danger); margin-bottom: 16px; display: none; }
+
+    /* LIST PANEL */
+    .list-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+    .list-header { padding: 16px; border-bottom: 1px solid var(--border); font-size: 14px; font-weight: 600; }
+    .list-item { padding: 12px 16px; border-bottom: 1px solid rgba(59,73,76,0.4); cursor: pointer; transition: background 0.15s; }
+    .list-item:last-child { border-bottom: none; }
+    .list-item:hover { background: var(--surface-high); }
+    .list-item.selected { background: rgba(0,229,255,0.08); border-left: 2px solid var(--primary); }
+    .list-item-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+    .list-item-meta { font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
+    .list-item-actions { display: flex; gap: 4px; margin-top: 6px; }
+    .btn-xs { padding: 3px 8px; border-radius: 3px; font-size: 11px; cursor: pointer; border: 1px solid var(--border); background: none; color: var(--text-muted); }
+    .btn-xs:hover { background: var(--surface-high); color: var(--text); }
+    .btn-xs.danger:hover { border-color: var(--danger); color: var(--danger); }
+  </style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="/cms/dashboard.html">
+    <div class="logo-icon"><i class="ti ti-hexagon"></i></div>
+    GeoEngine CMS
+  </a>
+  <nav>
+    <a href="/cms/dashboard.html">Dashboard</a>
+    <a href="/webgis">Map View</a>
+    <a href="/cms/analysis.html" class="active">Asset Registry</a>
+    <a href="/cms/categories.html">Kategori</a>
+  </nav>
+  <div class="header-right">
+    <span style="font-size:13px;color:var(--text-muted)">
+      <i class="ti ti-user-circle"></i>
+      <span id="username-display">Admin</span>
+    </span>
+    <button class="btn-logout" onclick="logout()">
+      <i class="ti ti-logout"></i> Logout
+    </button>
+  </div>
+</header>
+
+<div class="main">
+  <aside class="sidebar">
+    <div class="sidebar-label">Overview</div>
+    <a class="nav-item" href="/cms/dashboard.html"><i class="ti ti-dashboard"></i> Dashboard</a>
+    <a class="nav-item active" href="/cms/analysis.html"><i class="ti ti-map-pin"></i> Titik Analisis</a>
+    <a class="nav-item" href="/cms/categories.html"><i class="ti ti-tags"></i> Kategori</a>
+    <div class="sidebar-label">System</div>
+    <a class="nav-item" href="/webgis"><i class="ti ti-map"></i> Buka WebGIS</a>
+    <a class="nav-item" onclick="logout()"><i class="ti ti-logout"></i> Logout</a>
+  </aside>
+
+  <div class="content">
+    <div class="page-title" id="form-mode-title">Tambah Titik Analisis</div>
+    <div class="page-sub">Isi metadata lengkap untuk titik analisis baru</div>
+
+    <div class="success-msg" id="success-msg"></div>
+    <div class="error-msg" id="error-msg"></div>
+
+    <div class="content-grid">
+      <!-- FORM -->
+      <div class="form-card">
+        <div class="form-title">
+          <i class="ti ti-edit"></i>
+          <span id="form-title-label">Form Analisis Baru</span>
+        </div>
+        <input type="hidden" id="edit-id"/>
+
+        <div class="form-group">
+          <label class="form-label">Judul Analisis</label>
+          <input class="form-input" type="text" id="f-title" placeholder="Contoh: Jabodetabek Expansion 2024"/>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Deskripsi</label>
+          <textarea class="form-input" id="f-desc" placeholder="Deskripsi lengkap analisis..."></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Kategori</label>
+            <select class="form-input" id="f-category">
+              <option value="">— Pilih Kategori —</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confidence Score (%)</label>
+            <input class="form-input mono" type="number" id="f-confidence" min="0" max="100" placeholder="85"/>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Latitude</label>
+            <input class="form-input mono" type="number" id="f-lat" step="any" placeholder="-6.2088"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Longitude</label>
+            <input class="form-input mono" type="number" id="f-lng" step="any" placeholder="106.8456"/>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Tools yang Digunakan</label>
+          <div class="tools-input-wrap">
+            <input class="form-input" type="text" id="f-tool-input" placeholder="Contoh: QGIS, Python, Sentinel-2"/>
+            <button class="btn-add-tool" onclick="addTool()">
+              <i class="ti ti-plus"></i> Tambah
+            </button>
+          </div>
+          <div class="tools-tags" id="tools-tags"></div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Link Laporan (Medium / URL)</label>
+          <input class="form-input" type="url" id="f-link" placeholder="https://medium.com/..."/>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">URL Thumbnail</label>
+          <input class="form-input" type="url" id="f-thumbnail" placeholder="https://..."/>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-primary" onclick="submitForm()">
+            <i class="ti ti-device-floppy"></i>
+            <span id="submit-label">Simpan Analisis</span>
+          </button>
+          <button class="btn-secondary" onclick="resetForm()">
+            <i class="ti ti-x"></i> Reset
+          </button>
+        </div>
+      </div>
+
+      <!-- LIST -->
+      <div class="list-card">
+        <div class="list-header">
+          <i class="ti ti-list"></i> Semua Titik Analisis
+        </div>
+        <div id="point-list">
+          <div style="padding:20px;text-align:center;color:var(--text-muted);font-size:13px">Memuat...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const API = 'http://localhost:3000/api';
+  const token = localStorage.getItem('geo_token');
+  const user = JSON.parse(localStorage.getItem('geo_user') || '{}');
+  if (!token) window.location.href = '/cms/index.html';
+  document.getElementById('username-display').textContent = user.username || 'Admin';
+
+  let tools = [];
+  let editMode = false;
+
+  // Load kategori ke dropdown
+  async function loadCategories() {
+    const res = await fetch(`${API}/categories`);
+    const data = await res.json();
+    const sel = document.getElementById('f-category');
+    data.data.forEach(c => {
+      sel.innerHTML += `<option value="${c.id}">${c.name}</option>`;
+    });
+  }
+
+  // Load daftar titik analisis
+  async function loadPoints() {
+    const res = await fetch(`${API}/analysis-points`);
+    const data = await res.json();
+    const list = document.getElementById('point-list');
+    const features = data.features || [];
+
+    if (!features.length) {
+      list.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted);font-size:13px">Belum ada data</div>';
+      return;
+    }
+
+    list.innerHTML = features.map(f => {
+      const p = f.properties;
+      const [lng, lat] = f.geometry.coordinates;
+      return `
+        <div class="list-item" id="item-${p.id}">
+          <div class="list-item-title">${p.title}</div>
+          <div class="list-item-meta">
+            <span style="color:${p.category_color}">${p.category_name || '—'}</span>
+            <span>•</span>
+            <span style="font-family:'JetBrains Mono',monospace">${lat.toFixed(4)}, ${lng.toFixed(4)}</span>
+          </div>
+          <div class="list-item-actions">
+            <button class="btn-xs" onclick="loadEdit('${p.id}')">
+              <i class="ti ti-edit"></i> Edit
+            </button>
+            <button class="btn-xs danger" onclick="deletePoint('${p.id}','${p.title}')">
+              <i class="ti ti-trash"></i> Hapus
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // Cek query string untuk edit mode
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('edit')) loadEdit(params.get('edit'));
+  }
+
+  // Tambah tool tag
+  function addTool() {
+    const input = document.getElementById('f-tool-input');
+    const val = input.value.trim();
+    if (!val || tools.includes(val)) return;
+    tools.push(val);
+    renderTools();
+    input.value = '';
+  }
+
+  document.getElementById('f-tool-input').addEventListener('keypress', e => {
+    if (e.key === 'Enter') { e.preventDefault(); addTool(); }
+  });
+
+  function removeTool(t) {
+    tools = tools.filter(x => x !== t);
+    renderTools();
+  }
+
+  function renderTools() {
+    document.getElementById('tools-tags').innerHTML = tools.map(t =>
+      `<span class="tool-tag">${t} <button onclick="removeTool('${t}')"><i class="ti ti-x"></i></button></span>`
+    ).join('');
+  }
+
+  // Submit form
+  async function submitForm() {
+    const title = document.getElementById('f-title').value.trim();
+    const desc = document.getElementById('f-desc').value.trim();
+    const category_id = document.getElementById('f-category').value;
+    const confidence_score = parseInt(document.getElementById('f-confidence').value) || 0;
+    const latitude = parseFloat(document.getElementById('f-lat').value);
+    const longitude = parseFloat(document.getElementById('f-lng').value);
+    const external_link = document.getElementById('f-link').value.trim();
+    const thumbnail_url = document.getElementById('f-thumbnail').value.trim();
+    const editId = document.getElementById('edit-id').value;
+
+    if (!title || !latitude || !longitude) {
+      showMsg('error', 'Judul, latitude, dan longitude wajib diisi');
+      return;
+    }
+
+    const body = { title, description: desc, category_id, tools, external_link, thumbnail_url, confidence_score, latitude, longitude };
+    const url = editId ? `${API}/analysis-points/${editId}` : `${API}/analysis-points`;
+    const method = editId ? 'PUT' : 'POST';
+
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json();
+      if (res.ok) {
+        showMsg('success', editId ? 'Data berhasil diupdate!' : 'Titik analisis berhasil ditambahkan!');
+        resetForm();
+        loadPoints();
+      } else {
+        showMsg('error', data.message || 'Gagal menyimpan data');
+      }
+    } catch (err) {
+      showMsg('error', 'Tidak dapat terhubung ke server');
+    }
+  }
+
+  // Load data untuk edit
+  async function loadEdit(id) {
+    const res = await fetch(`${API}/analysis-points/${id}`);
+    const data = await res.json();
+    const p = data.data;
+
+    document.getElementById('edit-id').value = p.id;
+    document.getElementById('f-title').value = p.title;
+    document.getElementById('f-desc').value = p.description || '';
+    document.getElementById('f-category').value = p.category_id || '';
+    document.getElementById('f-confidence').value = p.confidence_score;
+    document.getElementById('f-lat').value = p.latitude;
+    document.getElementById('f-lng').value = p.longitude;
+    document.getElementById('f-link').value = p.external_link || '';
+    document.getElementById('f-thumbnail').value = p.thumbnail_url || '';
+
+    tools = p.tools || [];
+    renderTools();
+
+    document.getElementById('form-mode-title').textContent = 'Edit Titik Analisis';
+    document.getElementById('form-title-label').textContent = 'Edit Data Analisis';
+    document.getElementById('submit-label').textContent = 'Update Analisis';
+
+    document.querySelectorAll('.list-item').forEach(el => el.classList.remove('selected'));
+    const el = document.getElementById(`item-${id}`);
+    if (el) { el.classList.add('selected'); el.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Hapus titik
+  async function deletePoint(id, title) {
+    if (!confirm(`Hapus "${title}"?`)) return;
+    await fetch(`${API}/analysis-points/${id}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    showMsg('success', `"${title}" berhasil dihapus`);
+    loadPoints();
+  }
+
+  // Reset form
+  function resetForm() {
+    document.getElementById('edit-id').value = '';
+    document.getElementById('f-title').value = '';
+    document.getElementById('f-desc').value = '';
+    document.getElementById('f-category').value = '';
+    document.getElementById('f-confidence').value = '';
+    document.getElementById('f-lat').value = '';
+    document.getElementById('f-lng').value = '';
+    document.getElementById('f-link').value = '';
+    document.getElementById('f-thumbnail').value = '';
+    tools = [];
+    renderTools();
+    document.getElementById('form-mode-title').textContent = 'Tambah Titik Analisis';
+    document.getElementById('form-title-label').textContent = 'Form Analisis Baru';
+    document.getElementById('submit-label').textContent = 'Simpan Analisis';
+    document.querySelectorAll('.list-item').forEach(el => el.classList.remove('selected'));
+    history.replaceState(null, '', '/cms/analysis.html');
+  }
+
+  function showMsg(type, msg) {
+    const el = document.getElementById(`${type}-msg`);
+    el.textContent = msg;
+    el.style.display = 'block';
+    setTimeout(() => el.style.display = 'none', 4000);
+  }
+
+  function logout() {
+    localStorage.removeItem('geo_token');
+    localStorage.removeItem('geo_user');
+    window.location.href = '/cms/index.html';
+  }
+
+  loadCategories();
+  loadPoints();
+</script>
+</body>
+</html>

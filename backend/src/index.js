@@ -11,6 +11,9 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static('uploads'));
+const path = require('path');
+app.use('/webgis', express.static(path.join(__dirname, '../../frontend/webgis')));
+app.use('/cms', express.static(path.join(__dirname, '../../frontend/cms')));
 
 // Routes
 const categoriesRouter = require('./routes/categories');

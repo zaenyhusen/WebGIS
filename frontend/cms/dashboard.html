@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GeoEngine CMS — Dashboard</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #131313;
+      --surface: #1c1b1b;
+      --surface-high: #2a2a2a;
+      --border: #3b494c;
+      --primary: #00E5FF;
+      --text: #e5e2e1;
+      --text-muted: #849396;
+      --danger: #FF3B3B;
+      --success: #00FF88;
+      --warning: #FF6B35;
+      --sidebar-width: 240px;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* HEADER */
+    header {
+      height: 52px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      gap: 16px;
+      flex-shrink: 0;
+      z-index: 100;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 15px;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .logo-icon {
+      width: 28px; height: 28px;
+      background: var(--primary);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      color: #000; font-size: 14px;
+    }
+    nav { display: flex; gap: 4px; margin-left: 8px; }
+    nav a {
+      padding: 6px 14px;
+      border-radius: 4px;
+      font-size: 13px;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+    nav a:hover { color: var(--text); background: var(--surface-high); }
+    nav a.active { color: var(--primary); border-bottom: 2px solid var(--primary); border-radius: 0; }
+    .header-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+    .user-badge {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; color: var(--text-muted);
+    }
+    .btn-logout {
+      padding: 6px 12px;
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text-muted);
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-logout:hover { border-color: var(--danger); color: var(--danger); }
+
+    /* LAYOUT */
+    .main { display: flex; flex: 1; overflow: hidden; }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      padding: 16px 8px;
+    }
+    .sidebar-label {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--text-muted);
+      padding: 0 8px; margin-bottom: 6px; margin-top: 16px;
+    }
+    .sidebar-label:first-child { margin-top: 0; }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 10px; border-radius: 4px;
+      font-size: 13px; color: var(--text-muted);
+      text-decoration: none; cursor: pointer;
+      transition: all 0.15s; border: none; background: none; width: 100%;
+    }
+    .nav-item:hover { background: var(--surface-high); color: var(--text); }
+    .nav-item.active { background: rgba(0,229,255,0.1); color: var(--primary); }
+    .nav-item i { font-size: 17px; }
+
+    /* CONTENT */
+    .content { flex: 1; overflow-y: auto; padding: 24px; }
+
+    .page-title { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+    .page-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
+
+    /* STATS CARDS */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+    }
+    .stat-label {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--text-muted); margin-bottom: 12px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .stat-value {
+      font-size: 32px; font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text);
+    }
+    .stat-value.cyan { color: var(--primary); }
+    .stat-value.green { color: var(--success); }
+    .stat-value.orange { color: var(--warning); }
+    .stat-sub {
+      font-size: 12px; color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    /* TABLE */
+    .section-header {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .section-title { font-size: 15px; font-weight: 600; }
+    .btn-primary {
+      padding: 8px 16px;
+      background: var(--primary); color: #000;
+      border: none; border-radius: 4px;
+      font-size: 12px; font-weight: 700;
+      cursor: pointer; display: flex;
+      align-items: center; gap: 6px;
+      text-decoration: none;
+    }
+    .table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .search-bar {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .search-bar i { color: var(--text-muted); }
+    .search-bar input {
+      background: none; border: none; outline: none;
+      color: var(--text); font-size: 13px; flex: 1;
+    }
+    .search-bar input::placeholder { color: var(--text-muted); }
+    table { width: 100%; border-collapse: collapse; }
+    th {
+      padding: 10px 16px; text-align: left;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 12px 16px;
+      font-size: 13px;
+      border-bottom: 1px solid rgba(59,73,76,0.4);
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--surface-high); }
+    .category-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11px; padding: 3px 8px;
+      border-radius: 2px; border: 1px solid;
+    }
+    .category-dot { width: 6px; height: 6px; border-radius: 50%; }
+    .confidence-mini {
+      display: flex; align-items: center; gap: 8px;
+    }
+    .conf-bar {
+      height: 3px; width: 80px;
+      background: var(--surface-high); border-radius: 2px;
+    }
+    .conf-fill {
+      height: 100%; background: var(--primary); border-radius: 2px;
+    }
+    .conf-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; color: var(--text-muted);
+    }
+    .action-btns { display: flex; gap: 6px; }
+    .btn-sm {
+      padding: 5px 10px;
+      border-radius: 3px; font-size: 11px;
+      cursor: pointer; border: 1px solid var(--border);
+      background: none; color: var(--text-muted);
+      transition: all 0.15s;
+    }
+    .btn-sm:hover { background: var(--surface-high); color: var(--text); }
+    .btn-sm.danger:hover { border-color: var(--danger); color: var(--danger); }
+    .empty-state {
+      padding: 40px; text-align: center;
+      color: var(--text-muted); font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <a class="logo" href="/webgis">
+    <div class="logo-icon"><i class="ti ti-hexagon"></i></div>
+    GeoEngine CMS
+  </a>
+  <nav>
+    <a href="/cms/dashboard.html" class="active">Dashboard</a>
+    <a href="/webgis">Map View</a>
+    <a href="/cms/analysis.html">Asset Registry</a>
+    <a href="/cms/categories.html">Kategori</a>
+  </nav>
+  <div class="header-right">
+    <div class="user-badge">
+      <i class="ti ti-user-circle"></i>
+      <span id="username-display">Admin</span>
+    </div>
+    <button class="btn-logout" onclick="logout()">
+      <i class="ti ti-logout"></i> Logout
+    </button>
+  </div>
+</header>
+
+<div class="main">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-label">Overview</div>
+    <a class="nav-item active" href="/cms/dashboard.html">
+      <i class="ti ti-dashboard"></i> Dashboard
+    </a>
+    <a class="nav-item" href="/cms/analysis.html">
+      <i class="ti ti-map-pin"></i> Titik Analisis
+    </a>
+    <a class="nav-item" href="/cms/categories.html">
+      <i class="ti ti-tags"></i> Kategori
+    </a>
+    <div class="sidebar-label">System</div>
+    <a class="nav-item" href="/webgis">
+      <i class="ti ti-map"></i> Buka WebGIS
+    </a>
+    <a class="nav-item" href="/cms/index.html" onclick="logout()">
+      <i class="ti ti-logout"></i> Logout
+    </a>
+  </aside>
+
+  <!-- CONTENT -->
+  <div class="content">
+    <div class="page-title">Dashboard</div>
+    <div class="page-sub">Selamat datang kembali — ringkasan data GeoEngine</div>
+
+    <!-- STATS -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">
+          <i class="ti ti-map-pin"></i> Total Analisis
+        </div>
+        <div class="stat-value cyan" id="stat-points">—</div>
+        <div class="stat-sub">titik terdaftar</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">
+          <i class="ti ti-tags"></i> Kategori
+        </div>
+        <div class="stat-value green" id="stat-categories">—</div>
+        <div class="stat-sub">tema aktif</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">
+          <i class="ti ti-trending-up"></i> Avg Confidence
+        </div>
+        <div class="stat-value orange" id="stat-confidence">—</div>
+        <div class="stat-sub">rata-rata akurasi</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">
+          <i class="ti ti-activity"></i> System Status
+        </div>
+        <div class="stat-value green" id="stat-status">—</div>
+        <div class="stat-sub">database & API</div>
+      </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="section-header">
+      <div class="section-title">Titik Analisis Terbaru</div>
+      <a class="btn-primary" href="/cms/analysis.html">
+        <i class="ti ti-plus"></i> Tambah Analisis
+      </a>
+    </div>
+
+    <div class="table-wrap">
+      <div class="search-bar">
+        <i class="ti ti-search"></i>
+        <input type="text" id="search-input" placeholder="Cari titik analisis..." oninput="filterTable()"/>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Judul</th>
+            <th>Kategori</th>
+            <th>Tools</th>
+            <th>Confidence</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="table-body">
+          <tr><td colspan="5" class="empty-state">Memuat data...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  const API = 'http://localhost:3000/api';
+  const token = localStorage.getItem('geo_token');
+  const user = JSON.parse(localStorage.getItem('geo_user') || '{}');
+
+  // Cek autentikasi
+  if (!token) window.location.href = '/cms/index.html';
+
+  // Tampilkan username
+  document.getElementById('username-display').textContent = user.username || 'Admin';
+
+  let allPoints = [];
+
+  // Load stats
+  async function loadStats() {
+    try {
+      // Load points
+      const pRes = await fetch(`${API}/analysis-points`);
+      const pData = await pRes.json();
+      allPoints = pData.features || [];
+      document.getElementById('stat-points').textContent = allPoints.length;
+
+      // Avg confidence
+      const avg = allPoints.length
+        ? Math.round(allPoints.reduce((s, f) => s + f.properties.confidence_score, 0) / allPoints.length)
+        : 0;
+      document.getElementById('stat-confidence').textContent = avg + '%';
+
+      // Load categories
+      const cRes = await fetch(`${API}/categories`);
+      const cData = await cRes.json();
+      document.getElementById('stat-categories').textContent = cData.data.length;
+
+      // System health
+      const hRes = await fetch(`${API}/health`);
+      const hData = await hRes.json();
+      document.getElementById('stat-status').textContent = hData.status === 'ok' ? 'Online' : 'Error';
+
+      // Render table
+      renderTable(allPoints);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  function renderTable(features) {
+    const tbody = document.getElementById('table-body');
+    if (!features.length) {
+      tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Belum ada data analisis</td></tr>';
+      return;
+    }
+    tbody.innerHTML = features.map(f => {
+      const p = f.properties;
+      const tools = (p.tools || []).slice(0, 2).join(', ');
+      return `
+        <tr>
+          <td><strong>${p.title}</strong></td>
+          <td>
+            <span class="category-badge" style="color:${p.category_color};border-color:${p.category_color}40">
+              <span class="category-dot" style="background:${p.category_color}"></span>
+              ${p.category_name || '—'}
+            </span>
+          </td>
+          <td style="color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:11px">${tools}</td>
+          <td>
+            <div class="confidence-mini">
+              <div class="conf-bar">
+                <div class="conf-fill" style="width:${p.confidence_score}%"></div>
+              </div>
+              <span class="conf-val">${p.confidence_score}%</span>
+            </div>
+          </td>
+          <td>
+            <div class="action-btns">
+              <button class="btn-sm" onclick="editPoint('${p.id}')">
+                <i class="ti ti-edit"></i> Edit
+              </button>
+              <button class="btn-sm danger" onclick="deletePoint('${p.id}', '${p.title}')">
+                <i class="ti ti-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  function filterTable() {
+    const q = document.getElementById('search-input').value.toLowerCase();
+    const filtered = allPoints.filter(f =>
+      f.properties.title.toLowerCase().includes(q) ||
+      (f.properties.category_name || '').toLowerCase().includes(q)
+    );
+    renderTable(filtered);
+  }
+
+  async function deletePoint(id, title) {
+    if (!confirm(`Hapus "${title}"?`)) return;
+    await fetch(`${API}/analysis-points/${id}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    loadStats();
+  }
+
+  function editPoint(id) {
+    window.location.href = `/cms/analysis.html?edit=${id}`;
+  }
+
+  function logout() {
+    localStorage.removeItem('geo_token');
+    localStorage.removeItem('geo_user');
+    window.location.href = '/cms/index.html';
+  }
+
+  loadStats();
+</script>
+</body>
+</html>

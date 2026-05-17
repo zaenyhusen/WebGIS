@@ -31,6 +31,9 @@ app.get('/', (req, res) => {
   });
 });
 
+const authRouter = require('./routes/auth');
+app.use('/api/auth', authRouter);
+
 // Test koneksi database
 app.get('/api/health', async (req, res) => {
   try {

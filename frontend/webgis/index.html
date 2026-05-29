@@ -433,9 +433,11 @@
 <!-- HEADER -->
 <header>
   <a class="logo" href="#">
-  <img src="https://imgur.com/gallery/logo-geoaccess-pzCr8TG#PXNHoh0" style="height:28px;border-radius:6px;" alt="Geoaccess"/>
-  Geoaccess
-</a>
+    <img src="https://i.imgur.com/PXNHoh0.png" 
+         style="height:28px;width:28px;border-radius:6px;object-fit:cover" 
+         alt="Geoaccess"/>
+    Geoaccess
+  </a>
 </header>
 
 <!-- MAIN -->
@@ -446,7 +448,10 @@
     <div class="sidebar-section">
       <div style="padding:8px 4px 12px">
         <div style="font-weight:600;font-size:14px">Portofolio Pemetaan</div>
-        <div style="font-size:11px;color:var(--text-muted);margin-top:2px">Dokumentasi portofolio analisis geospasial untuk mendukung pengambilan keputusan berbasis datadari skala kawasan hingga nasional</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:2px">
+          Dokumentasi portofolio analisis geospasial untuk mendukung 
+          pengambilan keputusan berbasis data — dari skala kawasan hingga nasional.
+        </div>
       </div>
     </div>
 
@@ -459,9 +464,17 @@
       <div id="category-list"></div>
     </div>
 
+    <div class="sidebar-footer">
+      <button class="btn-export" onclick="exportGeoJSON()">
+        <i class="ti ti-download"></i> Export Dataset
+      </button>
+    </div>
+
+  </aside>
+
   <!-- MAP -->
   <div style="position:relative;flex:1;height:100%;display:flex;flex-direction:column;">
-    <div id="map"></div>
+    <div id="map" style="flex:1;height:100%;"></div>
     <div class="coords-readout" id="coords">
       <span id="lat-lng">-6.2088° S, 106.8456° E</span>
     </div>

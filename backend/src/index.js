@@ -34,7 +34,7 @@ app.use('/api/auth', authRouter);
 // Root route
 app.get('/', (req, res) => {
   res.json({
-    message: '🌏 GeoEngine API berjalan',
+    message: 'GeoEngine API berjalan',
     version: '1.0.0',
     status: 'online'
   });
